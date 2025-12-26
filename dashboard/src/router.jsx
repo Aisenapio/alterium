@@ -53,6 +53,7 @@ import ComponentsPage from "@/pages/main/components";
 import CryptoArbitragePage from "@/pages/main/crypto-arbitrage";
 
 import MarketPage from "@/pages/main/market";
+import TechnicalPage from "@/pages/main/technical";
 
 const Router = () => {
   return (
@@ -67,6 +68,7 @@ const Router = () => {
             <Route path="dashboard-6" element={<Dashboard6Page />} />
             <Route path="crypto-arbitrage" element={<CryptoArbitragePage />} />
             <Route path="market" element={<MarketPage />} />
+            <Route path="technical" element={<TechnicalPage />} />
             <Route element={<TasksLayout />}>
               <Route path="tasks" element={<TasksPage />} />
               <Route path="tasks/:id" element={<TaskDetailPage />} />

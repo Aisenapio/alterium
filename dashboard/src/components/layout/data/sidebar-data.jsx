@@ -1,3 +1,4 @@
+
 import {
   IconApps,
   IconChecklist,
@@ -51,6 +52,11 @@ export const sidebarData = {
           title: "Рынок",
           url: "/market",
           icon: IconChartBar,
+        },
+        {
+          title: "Техническая",
+          url: "/technical",
+          icon: IconSettings,
         },
       ],
     },
