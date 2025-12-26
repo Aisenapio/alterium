@@ -66,7 +66,7 @@ export function ArbitrageCard({ opportunity }) {
 
             <CardContent className="p-6 grid gap-6 md:grid-cols-2">
                 {/* Best Route */}
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4 rounded-xl border bg-muted/20 p-4">
                     <div className="flex justify-between items-center border-b pb-2">
                         <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Арбитражный маршрут</h3>
                         <span className="text-[10px] text-muted-foreground">Получено: {opportunity.receivedTime || '--:--:--'}</span>
@@ -76,9 +76,9 @@ export function ArbitrageCard({ opportunity }) {
                             <div key={index} className="flex items-center gap-2 flex-1 min-w-[120px]">
                                 <div className={cn(
                                     "flex-1 p-3 rounded-lg border w-full",
-                                    step.type === 'buy' ? "bg-emerald-500/5 border-emerald-500/20" :
-                                        step.type === 'sell' ? "bg-red-500/5 border-red-500/20" :
-                                            "bg-blue-500/5 border-blue-500/20"
+                                    step.type === 'buy' ? "bg-emerald-500/10 border-emerald-500/30" :
+                                        step.type === 'sell' ? "bg-red-500/10 border-red-500/30" :
+                                            "bg-blue-500/10 border-blue-500/30"
                                 )}>
                                     <p className="text-[10px] text-muted-foreground mb-1">{step.label}</p>
                                     <p className="text-sm font-bold text-foreground">{step.exchange}</p>
@@ -96,39 +96,39 @@ export function ArbitrageCard({ opportunity }) {
                 </div>
 
                 {/* Execution Stats */}
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-4 rounded-xl border bg-muted/20 p-4">
                     <div className="flex justify-between items-center border-b pb-2">
                         <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">Статистика исполнения</h3>
                         <span className="text-[10px] text-muted-foreground">Завершено: {opportunity.completedTime || '--:--:--'}</span>
                     </div>
 
-
-
                     {/* Execution Route Visualization */}
-                    {opportunity.executionRoute && (
-                        <div className="mt-2">
-                            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent w-full">
-                                {opportunity.executionRoute.map((step, index, array) => (
-                                    <div key={index} className="flex items-center gap-2 flex-1 min-w-[120px]">
-                                        <div className={cn(
-                                            "flex-1 p-3 rounded-lg border w-full",
-                                            step.type === 'buy' ? "bg-emerald-500/5 border-emerald-500/20" :
-                                                step.type === 'sell' ? "bg-red-500/5 border-red-500/20" :
-                                                    "bg-blue-500/5 border-blue-500/20"
-                                        )}>
-                                            <p className="text-[10px] text-muted-foreground mb-1">{step.label}</p>
-                                            <p className="text-sm font-bold text-foreground">{step.exchange}</p>
-                                            <p className="text-lg font-mono font-medium">${step.price.toLocaleString()}</p>
-                                        </div>
-
-                                        {index < array.length - 1 && (
-                                            <div className="flex flex-col items-center justify-center px-1">
-                                                <IconArrowRight className="text-muted-foreground h-5 w-5" />
-                                            </div>
-                                        )}
+                    {opportunity.executionRoute ? (
+                        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent w-full">
+                            {opportunity.executionRoute.map((step, index, array) => (
+                                <div key={index} className="flex items-center gap-2 flex-1 min-w-[120px]">
+                                    <div className={cn(
+                                        "flex-1 p-3 rounded-lg border w-full",
+                                        step.type === 'buy' ? "bg-emerald-500/10 border-emerald-500/30" :
+                                            step.type === 'sell' ? "bg-red-500/10 border-red-500/30" :
+                                                "bg-blue-500/10 border-blue-500/30"
+                                    )}>
+                                        <p className="text-[10px] text-muted-foreground mb-1">{step.label}</p>
+                                        <p className="text-sm font-bold text-foreground">{step.exchange}</p>
+                                        <p className="text-lg font-mono font-medium">${step.price.toLocaleString()}</p>
                                     </div>
-                                ))}
-                            </div>
+
+                                    {index < array.length - 1 && (
+                                        <div className="flex flex-col items-center justify-center px-1">
+                                            <IconArrowRight className="text-muted-foreground h-5 w-5" />
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="flex items-center justify-center h-full text-sm text-muted-foreground py-4">
+                            Нет данных об исполнении
                         </div>
                     )}
                 </div>
