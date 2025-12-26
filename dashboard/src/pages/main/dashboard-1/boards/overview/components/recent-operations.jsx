@@ -1,24 +1,7 @@
+
 "use client"
 
-import * as React from "react"
-import {
-    flexRender,
-    getCoreRowModel,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    useReactTable,
-} from "@tanstack/react-table"
-import { ArrowUpDown } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
-import { Checkbox } from "@/components/ui/checkbox"
+import { useState } from "react"
 import {
     Table,
     TableBody,
@@ -27,301 +10,154 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react"
 
-const data = [
-    {
-        id: "op_1",
-        type: "Арбитраж",
-        asset: "BTC/USDT",
-        amount: 1250.00,
-        status: "success",
-        date: "2024-05-20 14:30",
-    },
-    {
-        id: "op_2",
-        type: "Покупка",
-        asset: "ETH",
-        amount: 3200.50,
-        status: "processing",
-        date: "2024-05-20 12:15",
-    },
-    {
-        id: "op_3",
-        type: "Вывод",
-        asset: "USDT",
-        amount: 500.00,
-        status: "success",
-        date: "2024-05-19 09:45",
-    },
-    {
-        id: "op_4",
-        type: "Арбитраж",
-        asset: "SOL/USDT",
-        amount: 180.20,
-        status: "failed",
-        date: "2024-05-18 16:20",
-    },
-    {
-        id: "op_5",
-        type: "Депозит",
-        asset: "BTC",
-        amount: 5000.00,
-        status: "success",
-        date: "2024-05-18 10:00",
-    },
-    {
-        id: "op_6",
-        type: "Покупка",
-        asset: "ADA",
-        amount: 450.00,
-        status: "success",
-        date: "2024-05-18 09:30",
-    },
-    {
-        id: "op_7",
-        type: "Арбитраж",
-        asset: "ETH/BTC",
-        amount: 2100.00,
-        status: "processing",
-        date: "2024-05-17 14:20",
-    },
-    {
-        id: "op_8",
-        type: "Вывод",
-        asset: "USDC",
-        amount: 1000.00,
-        status: "success",
-        date: "2024-05-17 11:00",
-    },
-    {
-        id: "op_9",
-        type: "Депозит",
-        asset: "SOL",
-        amount: 300.00,
-        status: "failed",
-        date: "2024-05-16 18:45",
-    },
-    {
-        id: "op_10",
-        type: "Арбитраж",
-        asset: "XRP/USDT",
-        amount: 800.00,
-        status: "success",
-        date: "2024-05-16 10:15",
-    },
-    {
-        id: "op_11",
-        type: "Покупка",
-        asset: "DOGE",
-        amount: 150.00,
-        status: "success",
-        date: "2024-05-15 22:30",
-    },
-    {
-        id: "op_12",
-        type: "Продажа",
-        asset: "BTC",
-        amount: 5200.00,
-        status: "processing",
-        date: "2024-05-15 15:40",
-    },
-]
+// Generate realistic mock data for general operations
+const generateOperationsData = () => {
+    const types = ["Арбитраж", "Покупка", "Продажа", "Депозит", "Вывод"]
+    const assets = ["BTC", "ETH", "USDT", "SOL", "ADA", "XRP"]
+    const statuses = ["success", "processing", "failed"]
 
-const columns = [
-    {
-        id: "select",
-        header: ({ table }) => (
-            <Checkbox
-                checked={
-                    table.getIsAllPageRowsSelected() ||
-                    (table.getIsSomePageRowsSelected() && "indeterminate")
-                }
-                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                aria-label="Выбрать все"
-            />
-        ),
-        cell: ({ row }) => (
-            <Checkbox
-                checked={row.getIsSelected()}
-                onCheckedChange={(value) => row.toggleSelected(!!value)}
-                aria-label="Выбрать строку"
-            />
-        ),
-        enableSorting: false,
-        enableHiding: false,
-    },
-    {
-        accessorKey: "type",
-        header: "Тип операции",
-        cell: ({ row }) => <div className="font-medium">{row.getValue("type")}</div>,
-    },
-    {
-        accessorKey: "asset",
-        header: "Актив",
-        cell: ({ row }) => <div>{row.getValue("asset")}</div>,
-    },
-    {
-        accessorKey: "amount",
-        header: () => <div className="text-right">Сумма ($)</div>,
-        cell: ({ row }) => {
-            const amount = parseFloat(row.getValue("amount"))
-            const formatted = new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: "USD",
-            }).format(amount)
-            return <div className="text-right font-medium">{formatted}</div>
-        },
-    },
-    {
-        accessorKey: "status",
-        header: "Статус",
-        cell: ({ row }) => {
-            const status = row.getValue("status")
-            let variant = "default"
-            let label = status
+    return Array.from({ length: 124 }).map((_, i) => {
+        const type = types[Math.floor(Math.random() * types.length)]
+        const asset = assets[Math.floor(Math.random() * assets.length)]
+        const status = statuses[Math.floor(Math.random() * statuses.length)]
+        const amount = (Math.random() * 5000).toFixed(2)
+        const isPositive = ["Депозит", "Продажа", "Арбитраж"].includes(type)
 
-            if (status === "success") {
-                variant = "secondary" // Using secondary as green-ish equivalent typically
-                label = "Успешно"
-            } else if (status === "processing") {
-                variant = "outline"
-                label = "В процессе"
-            } else if (status === "failed") {
-                variant = "destructive"
-                label = "Ошибка"
-            }
+        return {
+            id: `op_${i + 1}`,
+            type,
+            asset,
+            amount: parseFloat(amount),
+            status,
+            date: `2024-05-${Math.floor(Math.random() * 30 + 1).toString().padStart(2, '0')} ${Math.floor(Math.random() * 23).toString().padStart(2, '0')}:${Math.floor(Math.random() * 59).toString().padStart(2, '0')}`,
+            isPositive
+        }
+    })
+}
 
-            return (
-                <div className={`capitalize ${status === 'success' ? 'text-emerald-500' : status === 'failed' ? 'text-red-500' : 'text-yellow-500'}`}>
-                    {label}
-                </div>
-            )
-        },
-    },
-    {
-        accessorKey: "date",
-        header: ({ column }) => {
-            return (
-                <Button
-                    variant="ghost"
-                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-                >
-                    Дата
-                    <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-            )
-        },
-        cell: ({ row }) => <div className="text-muted-foreground text-xs">{row.getValue("date")}</div>,
-    },
-]
+const operationsData = generateOperationsData()
 
 export default function RecentOperations() {
-    const [sorting, setSorting] = React.useState([])
-    const [rowSelection, setRowSelection] = React.useState({})
-    const [pagination, setPagination] = React.useState({
-        pageIndex: 0,
-        pageSize: 10,
-    })
+    const [currentPage, setCurrentPage] = useState(1)
+    // Fixed items per page since selector is removed
+    const itemsPerPage = 10
 
-    const table = useReactTable({
-        data,
-        columns,
-        onSortingChange: setSorting,
-        getCoreRowModel: getCoreRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
-        getSortedRowModel: getSortedRowModel(),
-        getFilteredRowModel: getFilteredRowModel(),
-        onRowSelectionChange: setRowSelection,
-        onPaginationChange: setPagination,
-        state: {
-            sorting,
-            rowSelection,
-            pagination,
-        },
-    })
+    const totalPages = Math.ceil(operationsData.length / itemsPerPage)
+    const startIndex = (currentPage - 1) * itemsPerPage
+    const endIndex = startIndex + itemsPerPage
+    const currentData = operationsData.slice(startIndex, endIndex)
+
+    const handleNextPage = () => {
+        if (currentPage < totalPages) setCurrentPage(prev => prev + 1)
+    }
+
+    const handlePrevPage = () => {
+        if (currentPage > 1) setCurrentPage(prev => prev - 1)
+    }
+
+    const getStatusConfig = (status) => {
+        switch (status) {
+            case "success": return { label: "Успех", variant: "outline" }
+            case "processing": return { label: "Процесс", variant: "secondary" }
+            case "failed": return { label: "Ошибка", variant: "destructive" }
+            default: return { label: status, variant: "outline" }
+        }
+    }
 
     return (
-        <Card className="h-full flex flex-col">
-            <CardHeader className="flex-none">
-                <CardTitle className="text-xl">Недавние операции</CardTitle>
-                <CardDescription>Последние действия вашего бота и транзакции.</CardDescription>
+        <Card className="h-full flex flex-col overflow-hidden border-border/50 bg-background/50 backdrop-blur-sm">
+            <CardHeader className="flex-none p-6 pb-1">
+                <div className="flex items-center justify-between">
+                    <div className="space-y-1">
+                        <CardTitle className="text-lg">Недавние операции</CardTitle>
+                        <CardDescription>Последние действия и транзакции</CardDescription>
+                    </div>
+                </div>
             </CardHeader>
-            <CardContent className="flex-1 flex flex-col min-h-0">
-                <div className="rounded-md border flex-1 overflow-auto">
-                    <Table>
-                        <TableHeader className="sticky top-0 bg-background z-10">
-                            {table.getHeaderGroups().map((headerGroup) => (
-                                <TableRow key={headerGroup.id}>
-                                    {headerGroup.headers.map((header) => {
-                                        return (
-                                            <TableHead key={header.id}>
-                                                {header.isPlaceholder
-                                                    ? null
-                                                    : flexRender(
-                                                        header.column.columnDef.header,
-                                                        header.getContext()
-                                                    )}
-                                            </TableHead>
-                                        )
-                                    })}
-                                </TableRow>
-                            ))}
-                        </TableHeader>
-                        <TableBody>
-                            {table.getRowModel().rows?.length ? (
-                                table.getRowModel().rows.map((row) => (
-                                    <TableRow
-                                        key={row.id}
-                                        data-state={row.getIsSelected() && "selected"}
-                                    >
-                                        {row.getVisibleCells().map((cell) => (
-                                            <TableCell key={cell.id}>
-                                                {flexRender(
-                                                    cell.column.columnDef.cell,
-                                                    cell.getContext()
-                                                )}
-                                            </TableCell>
-                                        ))}
+            <CardContent className="p-0 flex-1 overflow-auto">
+                <Table>
+                    <TableHeader className="bg-muted/50">
+                        <TableRow className="hover:bg-transparent border-b border-border/50">
+                            <TableHead className="h-9 text-xs font-semibold text-muted-foreground uppercase tracking-wider pl-6">Тип</TableHead>
+                            <TableHead className="h-9 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Актив</TableHead>
+                            <TableHead className="h-9 text-xs font-semibold text-muted-foreground uppercase tracking-wider text-right">Объем</TableHead>
+                            <TableHead className="h-9 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Статус</TableHead>
+                            <TableHead className="h-9 text-xs font-semibold text-muted-foreground uppercase tracking-wider text-right pr-6">Дата</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {currentData.length > 0 ? (
+                            currentData.map((item) => {
+                                const statusInfo = getStatusConfig(item.status)
+                                return (
+                                    <TableRow key={item.id} className="hover:bg-muted/30 border-b border-border/50 last:border-0">
+                                        <TableCell className="py-1 font-medium text-foreground pl-6">
+                                            {item.type}
+                                        </TableCell>
+                                        <TableCell className="py-1">
+                                            <Badge variant="outline" className="font-mono text-[10px] tracking-wider text-muted-foreground">
+                                                {item.asset}
+                                            </Badge>
+                                        </TableCell>
+                                        <TableCell className="py-1 text-right font-mono font-bold">
+                                            <span className="text-foreground">
+                                                {item.isPositive ? "+" : "-"}${item.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                                            </span>
+                                        </TableCell>
+                                        <TableCell className="py-1">
+                                            <Badge variant={statusInfo.variant}>
+                                                {statusInfo.label}
+                                            </Badge>
+                                        </TableCell>
+                                        <TableCell className="py-1 text-right text-xs text-muted-foreground pr-6">
+                                            {item.date}
+                                        </TableCell>
                                     </TableRow>
-                                ))
-                            ) : (
-                                <TableRow>
-                                    <TableCell
-                                        colSpan={columns.length}
-                                        className="h-24 text-center"
-                                    >
-                                        Нет результатов.
-                                    </TableCell>
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
-                </div>
-                <div className="flex items-center justify-end space-x-2 py-4 flex-none">
-                    <div className="flex-1 text-sm text-muted-foreground">
-                        {table.getFilteredSelectedRowModel().rows.length} из{" "}
-                        {table.getFilteredRowModel().rows.length} строк выбрано.
-                    </div>
-                    <div className="space-x-2">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => table.previousPage()}
-                            disabled={!table.getCanPreviousPage()}
-                        >
-                            Назад
-                        </Button>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => table.nextPage()}
-                            disabled={!table.getCanNextPage()}
-                        >
-                            Вперед
-                        </Button>
-                    </div>
-                </div>
+                                )
+                            })
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={5} className="h-24 text-center">
+                                    Нет данных
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
             </CardContent>
+            <CardFooter className="flex items-center justify-between border-t p-4 bg-background/50">
+                <div className="text-sm text-muted-foreground">
+                    {startIndex + 1}-{Math.min(endIndex, operationsData.length)} из {operationsData.length}
+                </div>
+                <div className="flex items-center gap-2">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handlePrevPage}
+                        disabled={currentPage === 1}
+                    >
+                        <IconChevronLeft className="h-4 w-4 mr-1" />
+                        Назад
+                    </Button>
+                    <div className="flex items-center gap-1 text-sm font-medium">
+                        Страница {currentPage}
+                    </div>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleNextPage}
+                        disabled={currentPage === totalPages}
+                    >
+                        Вперед
+                        <IconChevronRight className="h-4 w-4 ml-1" />
+                    </Button>
+                </div>
+            </CardFooter>
         </Card>
     )
 }

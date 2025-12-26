@@ -22,7 +22,7 @@ export const sidebarData = {
   user: {
     name: "Администратор",
     email: "admin@alterium.io",
-    avatar: "/dashboard/avatars/ausrobdev-avatar.png",
+    avatar: "/avatars/ausrobdev-avatar.png",
   },
   teams: [
     {
@@ -34,16 +34,6 @@ export const sidebarData = {
     },
   ],
   navGroups: [
-    {
-      title: "Основное",
-      items: [
-        {
-          title: "Аналитика",
-          url: "/analytics",
-          icon: IconTrendingUp,
-        },
-      ],
-    },
     {
       title: "Крипто Арбитраж",
       items: [
@@ -61,52 +51,6 @@ export const sidebarData = {
           title: "Рынок",
           url: "/market",
           icon: IconChartBar,
-        },
-        {
-          title: "Подписчики",
-          url: "/subscribers",
-          icon: IconUsers,
-        },
-        {
-          title: "Продукты",
-          url: "/products",
-          icon: IconPackage,
-        },
-        {
-          title: "Компоненты",
-          url: "/components",
-          icon: IconApps,
-        },
-      ],
-    },
-    {
-      title: "Прочее",
-      items: [
-        {
-          title: "Настройки",
-          icon: IconSettings,
-          items: [
-            {
-              title: "Общие",
-              icon: IconTool,
-              url: "/settings",
-            },
-            {
-              title: "Профиль",
-              icon: IconUser,
-              url: "/settings/profile",
-            },
-            {
-              title: "Оплата",
-              icon: IconCoin,
-              url: "/settings/billing",
-            },
-          ],
-        },
-        {
-          title: "Справка",
-          icon: IconInfoCircle,
-          url: "/help",
         },
       ],
     },
