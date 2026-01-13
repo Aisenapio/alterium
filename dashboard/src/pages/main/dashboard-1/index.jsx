@@ -8,7 +8,7 @@ export default function Dashboard1Page() {
       <Header />
 
       <div className="space-y-6 p-6">
-        <div className="mb-8 flex flex-col items-start justify-between space-y-2 md:flex-row md:items-center">
+        <div className="mb-0 flex flex-col items-start justify-between space-y-2 md:flex-row md:items-center">
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Панель управления</h1>
             <p className="text-muted-foreground">Обзор ключевых показателей и статистики.</p>
