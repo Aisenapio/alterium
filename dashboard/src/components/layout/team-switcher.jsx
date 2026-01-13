@@ -33,7 +33,7 @@ export function TeamSwitcher({ teams }) {
             </div>
           </div>
           <span className="font-bold text-lg text-sidebar-foreground whitespace-nowrap group-data-[collapsible=icon]:hidden">
-            rFLOW
+            Alterium
           </span>
         </SidebarMenuButton>
       </SidebarMenuItem>
